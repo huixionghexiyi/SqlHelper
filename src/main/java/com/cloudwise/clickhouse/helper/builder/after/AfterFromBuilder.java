@@ -1,18 +1,26 @@
 package com.cloudwise.clickhouse.helper.builder.after;
 
+import java.util.List;
+
 import com.cloudwise.clickhouse.helper.SqlBuilder;
 import com.cloudwise.clickhouse.helper.builder.EndpointBuilder;
 import com.cloudwise.clickhouse.helper.builder.GroupByBuilder;
 import com.cloudwise.clickhouse.helper.builder.LimitBuilder;
 import com.cloudwise.clickhouse.helper.builder.OrderByBuilder;
 import com.cloudwise.clickhouse.helper.builder.WhereBuilder;
+import com.cloudwise.clickhouse.helper.condition.WhereCondition;
+import com.cloudwise.clickhouse.helper.trait.GroupByBuildable;
+import com.cloudwise.clickhouse.helper.trait.LimitBuildable;
+import com.cloudwise.clickhouse.helper.trait.OrderByBuildable;
 import com.cloudwise.clickhouse.helper.trait.SqlBuildable;
+import com.cloudwise.clickhouse.helper.trait.WhereBuildable;
 
 /**
  * @author timothy
  * @DateTime: 2023/6/21 10:34
  **/
-public class AfterFromBuilder implements SqlBuildable {
+public class AfterFromBuilder implements SqlBuildable, WhereBuildable, OrderByBuildable, LimitBuildable,
+    GroupByBuildable {
 
     private SqlBuilder proxy;
     private WhereBuilder whereBuilder;
@@ -34,7 +42,22 @@ public class AfterFromBuilder implements SqlBuildable {
         return whereBuilder.where(where);
     }
 
+    @Override
+    public AfterWhereBuilder where(WhereCondition whereCondition) {
+        return null;
+    }
+
     public LimitBuilder orderBy(String orderBy) {
+        return orderByBuilder.orderBy(orderBy);
+    }
+
+    @Override
+    public LimitBuilder orderByDesc(String orderBy) {
+        return null;
+    }
+
+    @Override
+    public LimitBuilder orderByAsc(String orderBy) {
         return orderByBuilder.orderBy(orderBy);
     }
 
@@ -44,6 +67,16 @@ public class AfterFromBuilder implements SqlBuildable {
 
     public AfterGroupByBuilder groupBy(String groupBy) {
         return groupByBuilder.groupBy(groupBy);
+    }
+
+    @Override
+    public AfterGroupByBuilder groupBy(List<String> groupBy) {
+        return groupByBuilder.groupBy(groupBy);
+    }
+
+    @Override
+    public AfterGroupByBuilder groupByHaving(String groupBy, String having) {
+        return groupByBuilder.groupByHaving(groupBy, having);
     }
 
     @Override

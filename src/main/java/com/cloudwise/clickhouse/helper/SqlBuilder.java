@@ -62,7 +62,11 @@ public class SqlBuilder implements SqlBuildable {
         return selectBuilder.select(select);
     }
 
-    public FromBuilder select(Class clazz) {
-        return selectBuilder.select(clazz);
+    public FromBuilder select(Class<?> clazz) {
+        return selectBuilder.select(SelectHelper.by(clazz));
+    }
+
+    public FromBuilder select(String tableAlias, Class<?> clazz) {
+        return selectBuilder.select(SelectHelper.by(tableAlias, clazz));
     }
 }

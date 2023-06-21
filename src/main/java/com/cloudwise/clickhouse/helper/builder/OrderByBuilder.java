@@ -1,7 +1,7 @@
 package com.cloudwise.clickhouse.helper.builder;
 
-import com.cloudwise.clickhouse.helper.ClickhouseHelper;
 import com.cloudwise.clickhouse.helper.SqlBuilder;
+import com.cloudwise.clickhouse.helper.trait.OrderByBuildable;
 import com.cloudwise.clickhouse.helper.trait.SelectSqlPart;
 import com.cloudwise.clickhouse.helper.trait.SqlBuildable;
 
@@ -9,7 +9,7 @@ import com.cloudwise.clickhouse.helper.trait.SqlBuildable;
  * @author timothy
  * @DateTime: 2023/6/20 11:52
  **/
-public class OrderByBuilder implements SqlBuildable, SelectSqlPart {
+public class OrderByBuilder implements SqlBuildable, SelectSqlPart, OrderByBuildable {
     private SqlBuilder proxy;
     private LimitBuilder limitBuilder;
 
@@ -22,6 +22,18 @@ public class OrderByBuilder implements SqlBuildable, SelectSqlPart {
 
     public LimitBuilder orderBy(String orderBy) {
         orderByPart = String.format("order by %s ", orderBy);
+        return limitBuilder;
+    }
+
+    @Override
+    public LimitBuilder orderByDesc(String orderBy) {
+        orderByPart = String.format("order by %s desc", orderBy);
+        return limitBuilder;
+    }
+
+    @Override
+    public LimitBuilder orderByAsc(String orderBy) {
+        orderByPart = String.format("order by %s asc", orderBy);
         return limitBuilder;
     }
 

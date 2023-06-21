@@ -20,12 +20,6 @@ public class SelectBuilder {
         return fromBuilder;
     }
 
-    public FromBuilder select(Class clazz) {
-        String selectParams = SelectHelper.buildSelectParamByClass(clazz);
-        this.selectPart = String.format("select %s ", selectParams);
-        return fromBuilder;
-    }
-
     public String part() {
         return selectPart;
     }

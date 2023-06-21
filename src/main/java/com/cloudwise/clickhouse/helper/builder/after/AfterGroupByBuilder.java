@@ -4,13 +4,15 @@ import com.cloudwise.clickhouse.helper.SqlBuilder;
 import com.cloudwise.clickhouse.helper.builder.EndpointBuilder;
 import com.cloudwise.clickhouse.helper.builder.LimitBuilder;
 import com.cloudwise.clickhouse.helper.builder.OrderByBuilder;
+import com.cloudwise.clickhouse.helper.trait.LimitBuildable;
+import com.cloudwise.clickhouse.helper.trait.OrderByBuildable;
 import com.cloudwise.clickhouse.helper.trait.SqlBuildable;
 
 /**
  * @author timothy
  * @DateTime: 2023/6/21 10:20
  **/
-public class AfterGroupByBuilder implements SqlBuildable {
+public class AfterGroupByBuilder implements SqlBuildable, OrderByBuildable, LimitBuildable {
     private SqlBuilder proxy;
     private OrderByBuilder orderByBuilder;
     private LimitBuilder limitBuilder;
@@ -21,10 +23,22 @@ public class AfterGroupByBuilder implements SqlBuildable {
         this.limitBuilder = limitBuilder;
     }
 
+    @Override
     public LimitBuilder orderBy(String orderBy) {
         return orderByBuilder.orderBy(orderBy);
     }
 
+    @Override
+    public LimitBuilder orderByDesc(String desc) {
+        return orderByBuilder.orderBy(desc);
+    }
+
+    @Override
+    public LimitBuilder orderByAsc(String asc) {
+        return orderByBuilder.orderBy(asc);
+    }
+
+    @Override
     public EndpointBuilder limit(String limit) {
         return limitBuilder.limit(limit);
     }

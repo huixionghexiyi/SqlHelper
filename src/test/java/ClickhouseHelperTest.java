@@ -3,9 +3,10 @@ import org.junit.Test;
 import lombok.Data;
 import sun.jvm.hotspot.utilities.Assert;
 
-import com.baomidou.mybatisplus.annotation.TableField;
+import com.google.common.collect.Lists;
 
 import com.cloudwise.clickhouse.helper.ClickhouseHelper;
+import com.cloudwise.clickhouse.helper.annotations.ClickhouseTableField;
 
 /**
  * @author timothy
@@ -26,7 +27,6 @@ public class ClickhouseHelperTest {
 
     @Test
     public void testJoin() {
-
         String rightTable = ClickhouseHelper.selectBuilder()
             .select("ci_id, ci_name, model_id, toString(toDateTime(execute_time/1000)), execute_time")
             .from("cw_doop_120086658539777.doop_resource_info")
@@ -44,24 +44,37 @@ public class ClickhouseHelperTest {
         System.out.println(result);
     }
 
+    @Test
+    public void testGrace() {
+        String sql = ClickhouseHelper.selectBuilder()
+            .select("h", HostMonitor.class)
+            .from("cw_doop_120086658539777.doop_host_list h")
+            .where("host_ip=13")
+            .groupBy(Lists.newArrayList("host_ip", "host_id"))
+            .orderByDesc("host_ip")
+            .build();
+        System.out.println(sql);
+    }
+
     @Data
     class HostMonitor {
-        String name;
-        @TableField("host_ip")
-        String hostIp;
-        @TableField("host_id")
-        String hostId;
+        @ClickhouseTableField
+        private String name;
+        @ClickhouseTableField("host_ip")
+        private String hostIp;
+        @ClickhouseTableField("host_id")
+        private String hostId;
     }
 
     class ProcessMonitor {
-        @TableField("name")
-        String name;
-        @TableField("process_id")
-        String processId;
-        @TableField("cpu_used")
-        String cpuUsed;
-        @TableField("host_id")
-        String hostId;
+        @ClickhouseTableField("name")
+        private String name;
+        @ClickhouseTableField("process_id")
+        private String processId;
+        @ClickhouseTableField("cpu_used")
+        private String cpuUsed;
+        @ClickhouseTableField("host_id")
+        private String hostId;
     }
 
 }

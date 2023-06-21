@@ -10,8 +10,7 @@ import com.cloudwise.clickhouse.helper.SqlBuilder;
  **/
 public class ClickhouseHelper {
 
-    public static final Joiner PARAM_JOINER = Joiner.on(",");
-    public static final Joiner UNDERLINE_JOINER = Joiner.on("_");
+
 
     public static SqlBuilder selectBuilder() {
         return new SqlBuilder();
