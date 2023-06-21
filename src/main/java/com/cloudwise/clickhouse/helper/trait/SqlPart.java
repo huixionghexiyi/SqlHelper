@@ -5,6 +5,6 @@ package com.cloudwise.clickhouse.helper.trait;
  * @author timothy
  * @DateTime: 2023/6/20 14:35
  **/
-public interface SelectSqlPart {
+public interface SqlPart {
     String part();
 }

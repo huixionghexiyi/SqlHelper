@@ -22,28 +22,34 @@ public class SelectHelper {
         return JoinerUtils.UNDERLINE_JOINER.join(strings);
     }
 
-    public static <T> String by(Class<T> clazz) {
+    private static List<Field> getFields(Class<?> clazz) {
         Field[] fields = clazz.getDeclaredFields();
+        return Stream.of(fields)
+            .filter(f -> !Modifier.isStatic(f.getModifiers()))
+            .filter(f -> !Modifier.isTransient(f.getModifiers()))
+            .collect(Collectors.toList());
+    }
+
+    public static <T> String by(Class<T> clazz) {
+        List<Field> fields = getFields(clazz);
         List<String> result = Lists.newArrayList();
         for (Field field : fields) {
-            ClickhouseTableField tableField = field.getAnnotation(ClickhouseTableField.class);
-            if (tableField != null) {
-                result.add(tableField.value());
-            } else {
-                result.add(convert2Underline(field.getName()));
+            ClickhouseTableField annotation = field.getAnnotation(ClickhouseTableField.class);
+            if (annotation != null) {
+                if (StringUtils.isNotEmpty(annotation.value())) {
+                    result.add(annotation.value());
+                } else {
+                    result.add(convert2Underline(field.getName()));
+                }
             }
         }
         return JoinerUtils.PARAM_JOINER.join(result);
     }
 
     public static <T> String by(String tableAlias, Class<T> clazz) {
-        Field[] fields = clazz.getDeclaredFields();
+        List<Field> fields = getFields(clazz);
         List<String> result = Lists.newArrayList();
-        List<Field> collect = Stream.of(fields)
-            .filter(f -> !Modifier.isStatic(f.getModifiers()))
-            .filter(f -> !Modifier.isTransient(f.getModifiers()))
-            .collect(Collectors.toList());
-        for (Field field : collect) {
+        for (Field field : fields) {
             ClickhouseTableField annotation = field.getAnnotation(ClickhouseTableField.class);
             if (annotation != null) {
                 if (StringUtils.isNotEmpty(annotation.value())) {
@@ -54,5 +60,13 @@ public class SelectHelper {
             }
         }
         return JoinerUtils.PARAM_JOINER.join(result);
+    }
+
+    public static String by(String tableAlias, List<String> select) {
+        String[] ss = new String[select.size()];
+        for (int i = 0; i < ss.length; i++) {
+            ss[i] = tableAlias + "." + select.get(i);
+        }
+        return JoinerUtils.PARAM_JOINER.join(ss);
     }
 }

@@ -1,5 +1,7 @@
 package com.cloudwise.clickhouse.helper;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.cloudwise.clickhouse.helper.builder.FromBuilder;
@@ -8,6 +10,7 @@ import com.cloudwise.clickhouse.helper.builder.LimitBuilder;
 import com.cloudwise.clickhouse.helper.builder.OrderByBuilder;
 import com.cloudwise.clickhouse.helper.builder.SelectBuilder;
 import com.cloudwise.clickhouse.helper.builder.WhereBuilder;
+import com.cloudwise.clickhouse.helper.builder.after.AfterSelectBuilder;
 import com.cloudwise.clickhouse.helper.trait.SqlBuildable;
 
 /**
@@ -32,7 +35,7 @@ public class SqlBuilder implements SqlBuildable {
         whereBuilder =
             new WhereBuilder(this, orderByBuilder, limitBuilder, groupByBuilder);
         fromBuilder = new FromBuilder(this, whereBuilder, orderByBuilder, limitBuilder, groupByBuilder);
-        selectBuilder = new SelectBuilder(fromBuilder);
+        selectBuilder = new SelectBuilder(this, fromBuilder);
     }
 
     public String build() {
@@ -58,15 +61,19 @@ public class SqlBuilder implements SqlBuildable {
         return String.format("( %s )", build());
     }
 
-    public FromBuilder select(String select) {
+    public AfterSelectBuilder select(String select) {
         return selectBuilder.select(select);
     }
 
-    public FromBuilder select(Class<?> clazz) {
+    public AfterSelectBuilder select(String tableAlias, List<String> select) {
+        return selectBuilder.select(SelectHelper.by(tableAlias, select));
+    }
+
+    public AfterSelectBuilder select(Class<?> clazz) {
         return selectBuilder.select(SelectHelper.by(clazz));
     }
 
-    public FromBuilder select(String tableAlias, Class<?> clazz) {
+    public AfterSelectBuilder select(String tableAlias, Class<?> clazz) {
         return selectBuilder.select(SelectHelper.by(tableAlias, clazz));
     }
 }

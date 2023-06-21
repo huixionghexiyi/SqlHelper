@@ -1,6 +1,10 @@
 package com.cloudwise.clickhouse.helper.builder;
 
+import java.util.List;
+
 import com.cloudwise.clickhouse.helper.SelectHelper;
+import com.cloudwise.clickhouse.helper.SqlBuilder;
+import com.cloudwise.clickhouse.helper.builder.after.AfterSelectBuilder;
 
 /**
  * @author timothy
@@ -8,19 +12,26 @@ import com.cloudwise.clickhouse.helper.SelectHelper;
  **/
 public class SelectBuilder {
 
-    private String selectPart;
-    private FromBuilder fromBuilder;
+    private StringBuilder data;
 
-    public SelectBuilder(FromBuilder fromBuilder) {
-        this.fromBuilder = fromBuilder;
+    private AfterSelectBuilder afterSelectBuilder;
+
+    public SelectBuilder(SqlBuilder proxy, FromBuilder fromBuilder) {
+        this.data = new StringBuilder();
+        this.afterSelectBuilder = new AfterSelectBuilder(proxy, fromBuilder);
     }
 
-    public FromBuilder select(String select) {
-        this.selectPart = String.format("select %s ", select);
-        return fromBuilder;
+    public AfterSelectBuilder select(String select) {
+        append(String.format("select %s ", select));
+        return afterSelectBuilder;
+    }
+    public AfterSelectBuilder append(String select) {
+        data.append(',')
+            .append(select);
+        return afterSelectBuilder;
     }
 
     public String part() {
-        return selectPart;
+        return data.substring(1);
     }
 }
