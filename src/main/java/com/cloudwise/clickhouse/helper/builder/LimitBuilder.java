@@ -1,6 +1,6 @@
 package com.cloudwise.clickhouse.helper.builder;
 
-import com.cloudwise.clickhouse.helper.SelectSqlBuilder;
+import com.cloudwise.clickhouse.helper.SqlBuilder;
 import com.cloudwise.clickhouse.helper.trait.SelectSqlPart;
 import com.cloudwise.clickhouse.helper.trait.SqlBuildable;
 
@@ -10,12 +10,16 @@ import com.cloudwise.clickhouse.helper.trait.SqlBuildable;
  **/
 public class LimitBuilder implements SqlBuildable, SelectSqlPart {
 
-    private SelectSqlBuilder proxy;
+    private SqlBuilder proxy;
     private String limitPart;
 
-    public Endpoint limit(String limit) {
+    public LimitBuilder(SqlBuilder proxy) {
+        this.proxy = proxy;
+    }
+
+    public EndpointBuilder limit(String limit) {
         limitPart = String.format("limit %s", limit);
-        return new Endpoint(this);
+        return new EndpointBuilder(proxy);
     }
 
     @Override
@@ -24,20 +28,12 @@ public class LimitBuilder implements SqlBuildable, SelectSqlPart {
     }
 
     @Override
-    public String part() {
-        return limitPart;
+    public String asJoin() {
+        return proxy.asJoin();
     }
 
-    class Endpoint implements SqlBuildable {
-        LimitBuilder limitBuilder;
-
-        Endpoint(LimitBuilder limitBuilder) {
-            this.limitBuilder = limitBuilder;
-        }
-
-        @Override
-        public String build() {
-            return limitBuilder.build();
-        }
+    @Override
+    public String part() {
+        return limitPart;
     }
 }

@@ -8,4 +8,6 @@ package com.cloudwise.clickhouse.helper.trait;
 public interface SqlBuildable {
 
     String build();
+
+    String asJoin();
 }

@@ -1,6 +1,7 @@
 package com.cloudwise.clickhouse.helper.builder;
 
-import com.cloudwise.clickhouse.helper.SelectSqlBuilder;
+import com.cloudwise.clickhouse.helper.SqlBuilder;
+import com.cloudwise.clickhouse.helper.builder.after.AfterWhereBuilder;
 import com.cloudwise.clickhouse.helper.trait.SelectSqlPart;
 import com.cloudwise.clickhouse.helper.trait.SqlBuildable;
 
@@ -9,25 +10,31 @@ import com.cloudwise.clickhouse.helper.trait.SqlBuildable;
  * @DateTime: 2023/6/20 11:52
  **/
 public class WhereBuilder implements SqlBuildable, SelectSqlPart {
-    private SelectSqlBuilder proxy;
+    private SqlBuilder proxy;
 
-    private OrderAndLimitBuilder orderAndLimitBuilder;
+    private AfterWhereBuilder afterWhereBuilder;
 
-    public WhereBuilder(SelectSqlBuilder proxy, OrderAndLimitBuilder orderAndLimitBuilder) {
+    public WhereBuilder(SqlBuilder proxy, OrderByBuilder orderByBuilder, LimitBuilder limitBuilder,
+        GroupByBuilder groupByBuilder) {
         this.proxy = proxy;
-        this.orderAndLimitBuilder = orderAndLimitBuilder;
+        this.afterWhereBuilder = new AfterWhereBuilder(proxy, orderByBuilder, limitBuilder, groupByBuilder);
     }
 
     private String wherePart;
 
-    public OrderAndLimitBuilder where(String where) {
+    public AfterWhereBuilder where(String where) {
         wherePart = String.format("where %s ", where);
-        return orderAndLimitBuilder;
+        return afterWhereBuilder;
     }
 
     @Override
     public String build() {
         return proxy.build();
+    }
+
+    @Override
+    public String asJoin() {
+        return proxy.asJoin();
     }
 
     @Override
