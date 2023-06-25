@@ -21,7 +21,7 @@ public class EndpointBuilder implements SqlBuildable {
     }
 
     @Override
-    public String asJoin() {
-        return proxy.asJoin();
+    public String asSubSelect() {
+        return proxy.asSubSelect();
     }
 }

@@ -49,7 +49,7 @@ public class AfterGroupByBuilder implements SqlBuildable, OrderByBuildable, Limi
     }
 
     @Override
-    public String asJoin() {
-        return proxy.asJoin();
+    public String asSubSelect() {
+        return proxy.asSubSelect();
     }
 }

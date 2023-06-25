@@ -5,11 +5,13 @@ import java.util.List;
 import com.cloudwise.clickhouse.helper.SqlBuilder;
 import com.cloudwise.clickhouse.helper.builder.EndpointBuilder;
 import com.cloudwise.clickhouse.helper.builder.GroupByBuilder;
+import com.cloudwise.clickhouse.helper.builder.JoinBuilder;
 import com.cloudwise.clickhouse.helper.builder.LimitBuilder;
 import com.cloudwise.clickhouse.helper.builder.OrderByBuilder;
 import com.cloudwise.clickhouse.helper.builder.WhereBuilder;
 import com.cloudwise.clickhouse.helper.condition.WhereCondition;
 import com.cloudwise.clickhouse.helper.trait.GroupByBuildable;
+import com.cloudwise.clickhouse.helper.trait.JoinBuildable;
 import com.cloudwise.clickhouse.helper.trait.LimitBuildable;
 import com.cloudwise.clickhouse.helper.trait.OrderByBuildable;
 import com.cloudwise.clickhouse.helper.trait.SqlBuildable;
@@ -20,13 +22,14 @@ import com.cloudwise.clickhouse.helper.trait.WhereBuildable;
  * @DateTime: 2023/6/21 10:34
  **/
 public class AfterFromBuilder implements SqlBuildable, WhereBuildable, OrderByBuildable, LimitBuildable,
-    GroupByBuildable {
+    GroupByBuildable, JoinBuildable {
 
     private SqlBuilder proxy;
     private WhereBuilder whereBuilder;
     private OrderByBuilder orderByBuilder;
     private LimitBuilder limitBuilder;
     private GroupByBuilder groupByBuilder;
+    private JoinBuilder joinBuilder;
 
     public AfterFromBuilder(SqlBuilder proxy, WhereBuilder whereBuilder, OrderByBuilder orderByBuilder,
         LimitBuilder limitBuilder,
@@ -44,7 +47,7 @@ public class AfterFromBuilder implements SqlBuildable, WhereBuildable, OrderByBu
 
     @Override
     public AfterWhereBuilder where(WhereCondition whereCondition) {
-        return null;
+        return whereBuilder.where(whereCondition);
     }
 
     public LimitBuilder orderBy(String orderBy) {
@@ -85,7 +88,22 @@ public class AfterFromBuilder implements SqlBuildable, WhereBuildable, OrderByBu
     }
 
     @Override
-    public String asJoin() {
-        return proxy.asJoin();
+    public String asSubSelect() {
+        return proxy.asSubSelect();
+    }
+
+    @Override
+    public AfterJoinBuilder globalJoin(String alias, String table, String on) {
+        return joinBuilder.globalJoin(alias, table, on);
+    }
+
+    @Override
+    public AfterJoinBuilder globalLeftJoin(String alias, String table, String on) {
+        return joinBuilder.globalLeftJoin(alias, table, on);
+    }
+
+    @Override
+    public AfterJoinBuilder globalRightJoin(String alias, String table, String on) {
+        return joinBuilder.globalRightJoin(alias, table, on);
     }
 }

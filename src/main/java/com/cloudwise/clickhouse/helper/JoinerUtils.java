@@ -9,4 +9,6 @@ import com.google.common.base.Joiner;
 public class JoinerUtils {
     public static final Joiner PARAM_JOINER = Joiner.on(",");
     public static final Joiner UNDERLINE_JOINER = Joiner.on("_");
+
+    public static final Joiner WHERE_CONDITION_JOINER = Joiner.on(" and ");
 }

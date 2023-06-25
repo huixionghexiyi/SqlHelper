@@ -30,7 +30,7 @@ public class FromBuilder implements SqlPart, FromBuildable {
     @Override
 
     public AfterFromBuilder from(String tableAlias, String from) {
-        return from(String.format(" from %s AS %s ", from, tableAlias));
+        return from(String.format("%s AS %s ", from, tableAlias));
     }
 
     @Override

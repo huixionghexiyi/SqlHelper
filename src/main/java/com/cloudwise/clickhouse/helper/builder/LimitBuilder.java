@@ -28,8 +28,8 @@ public class LimitBuilder implements SqlBuildable, SqlPart {
     }
 
     @Override
-    public String asJoin() {
-        return proxy.asJoin();
+    public String asSubSelect() {
+        return proxy.asSubSelect();
     }
 
     @Override

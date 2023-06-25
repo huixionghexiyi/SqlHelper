@@ -9,5 +9,5 @@ public interface SqlBuildable {
 
     String build();
 
-    String asJoin();
+    String asSubSelect();
 }

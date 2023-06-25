@@ -3,6 +3,7 @@ package com.cloudwise.clickhouse.helper;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.C;
 
 import com.cloudwise.clickhouse.helper.builder.FromBuilder;
 import com.cloudwise.clickhouse.helper.builder.GroupByBuilder;
@@ -57,7 +58,7 @@ public class SqlBuilder implements SqlBuildable {
     }
 
     @Override
-    public String asJoin() {
+    public String asSubSelect() {
         return String.format("( %s )", build());
     }
 
@@ -75,5 +76,9 @@ public class SqlBuilder implements SqlBuildable {
 
     public AfterSelectBuilder select(String tableAlias, Class<?> clazz) {
         return selectBuilder.select(SelectHelper.by(tableAlias, clazz));
+    }
+
+    public AfterSelectBuilder appendSelect(String tableAlias, Class<?> clazz) {
+        return selectBuilder.append(SelectHelper.by(tableAlias, clazz));
     }
 }

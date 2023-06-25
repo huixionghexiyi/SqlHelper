@@ -69,7 +69,7 @@ public class AfterWhereBuilder implements SqlBuildable, OrderByBuildable, LimitB
     }
 
     @Override
-    public String asJoin() {
-        return proxy.asJoin();
+    public String asSubSelect() {
+        return proxy.asSubSelect();
     }
 }

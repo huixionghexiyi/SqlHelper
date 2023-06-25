@@ -34,7 +34,7 @@ public class AfterSelectBuilder implements FromBuildable {
     }
 
     public AfterSelectBuilder appendSelect(String tableAlias, Class<?> clazz) {
-        return proxy.select(tableAlias, clazz);
+        return proxy.appendSelect(tableAlias, clazz);
     }
 
     @Override

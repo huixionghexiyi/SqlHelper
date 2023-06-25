@@ -1,8 +1,5 @@
 package com.cloudwise.clickhouse.helper.builder;
 
-import java.util.List;
-
-import com.cloudwise.clickhouse.helper.SelectHelper;
 import com.cloudwise.clickhouse.helper.SqlBuilder;
 import com.cloudwise.clickhouse.helper.builder.after.AfterSelectBuilder;
 
@@ -25,9 +22,11 @@ public class SelectBuilder {
         append(String.format("select %s ", select));
         return afterSelectBuilder;
     }
+
     public AfterSelectBuilder append(String select) {
         data.append(',')
-            .append(select);
+            .append(select)
+            .append(' ');
         return afterSelectBuilder;
     }
 

@@ -44,8 +44,8 @@ public class OrderByBuilder implements SqlBuildable, SqlPart, OrderByBuildable {
     }
 
     @Override
-    public String asJoin() {
-        return proxy.asJoin();
+    public String asSubSelect() {
+        return proxy.asSubSelect();
     }
 
     @Override
