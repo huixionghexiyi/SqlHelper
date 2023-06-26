@@ -38,7 +38,7 @@ public class AfterWhereBuilder implements SqlBuildable, OrderByBuildable, LimitB
     }
 
     public LimitBuilder orderByDesc(String desc) {
-        return orderByBuilder.orderBy(desc + " desc");
+        return orderByBuilder.orderByDesc(desc);
     }
 
     public LimitBuilder orderByAsc(String asc) {
@@ -50,6 +50,11 @@ public class AfterWhereBuilder implements SqlBuildable, OrderByBuildable, LimitB
     }
 
     public AfterGroupByBuilder groupBy(String groupBy) {
+        return groupByBuilder.groupBy(groupBy);
+    }
+
+    @Override
+    public AfterGroupByBuilder groupBy(String... groupBy) {
         return groupByBuilder.groupBy(groupBy);
     }
 

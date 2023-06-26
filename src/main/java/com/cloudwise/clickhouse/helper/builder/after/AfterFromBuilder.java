@@ -56,7 +56,7 @@ public class AfterFromBuilder implements SqlBuildable, WhereBuildable, OrderByBu
 
     @Override
     public LimitBuilder orderByDesc(String orderBy) {
-        return orderByBuilder.orderBy(orderBy);
+        return orderByBuilder.orderByDesc(orderBy);
     }
 
     @Override
@@ -69,6 +69,11 @@ public class AfterFromBuilder implements SqlBuildable, WhereBuildable, OrderByBu
     }
 
     public AfterGroupByBuilder groupBy(String groupBy) {
+        return groupByBuilder.groupBy(groupBy);
+    }
+
+    @Override
+    public AfterGroupByBuilder groupBy(String... groupBy) {
         return groupByBuilder.groupBy(groupBy);
     }
 

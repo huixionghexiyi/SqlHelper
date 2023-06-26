@@ -11,6 +11,8 @@ import com.cloudwise.clickhouse.helper.builder.after.AfterGroupByBuilder;
 public interface GroupByBuildable {
     AfterGroupByBuilder groupBy(String groupBy);
 
+    AfterGroupByBuilder groupBy(String... groupBy);
+
     AfterGroupByBuilder groupBy(List<String> groupBy);
 
     AfterGroupByBuilder groupByHaving(String groupBy, String having);

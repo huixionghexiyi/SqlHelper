@@ -28,13 +28,13 @@ public class OrderByBuilder implements SqlBuildable, SqlPart, OrderByBuildable {
 
     @Override
     public LimitBuilder orderByDesc(String orderBy) {
-        data = String.format("order by %s desc", orderBy);
+        data = String.format("order by %s desc ", orderBy);
         return limitBuilder;
     }
 
     @Override
     public LimitBuilder orderByAsc(String orderBy) {
-        data = String.format("order by %s asc", orderBy);
+        data = String.format("order by %s asc ", orderBy);
         return limitBuilder;
     }
 

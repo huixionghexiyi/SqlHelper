@@ -2,8 +2,6 @@ package com.cloudwise.clickhouse.helper.condition;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.collect.Lists;
 
 import com.cloudwise.clickhouse.helper.JoinerUtils;
@@ -51,7 +49,7 @@ public class WhereCondition {
 
     public WhereCondition or(WhereCondition orCondition) {
         build();
-        this.result.append(" or ").append(orCondition.build());
+        this.result.append(" OR ").append(orCondition.build());
         return this;
     }
 
@@ -63,15 +61,15 @@ public class WhereCondition {
 
     private String build() {
         String result = JoinerUtils.WHERE_CONDITION_JOINER.join(data.stream().map(ConditionItem::build).toArray());
-        if (StringUtils.isNotEmpty(this.result)) {
-            this.result.append(" AND ");
-        }
         this.result.append('(').append(result).append(')');
         data.clear();
-        return result;
+        return this.result.toString();
     }
 
     public String getCondition() {
+        if (data.size() > 0) {
+            build();
+        }
         return result.toString();
     }
 }

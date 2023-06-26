@@ -31,13 +31,18 @@ public class GroupByBuilder implements SqlBuildable, SqlPart, GroupByBuildable {
     }
 
     @Override
+    public AfterGroupByBuilder groupBy(String... groupBy) {
+        return groupBy(JoinerUtils.PARAM_JOINER.join(groupBy));
+    }
+
+    @Override
     public AfterGroupByBuilder groupBy(List<String> groupBy) {
-        return groupBy(String.format("group by %s ", JoinerUtils.PARAM_JOINER.join(groupBy)));
+        return groupBy(JoinerUtils.PARAM_JOINER.join(groupBy));
     }
 
     @Override
     public AfterGroupByBuilder groupByHaving(String groupBy, String having) {
-        return groupBy(String.format("group by %s having %s", groupBy, having));
+        return groupBy(String.format("%s having %s ", groupBy, having));
     }
 
     @Override

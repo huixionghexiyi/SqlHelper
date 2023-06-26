@@ -38,15 +38,33 @@ public class ClickhouseHelperTest {
             .orderBy("execute_time desc")
             .limit("10")
             .asSubSelect();
-        String result = ClickhouseHelper.selectBuilder()
+        String sql = ClickhouseHelper.selectBuilder()
             .select("ci_id,ci_name,model_id,toString(toDateTime(execute_time/1000)),execute_time")
             .from("cw_doop_120086658539777.doop_resource_info a global join "
                   + rightTable + " b on a.ci_id = b.ci_id and a.execute_time = b.execute_time")
             .orderBy("execute_time desc")
             .build();
-        Assert.assertTrue(
-            "select ci_id,ci_name,model_id,toString(toDateTime(execute_time/1000)),execute_time from cw_doop_120086658539777.doop_resource_info a global join ( select ci_id, ci_name, model_id, toString(toDateTime(execute_time/1000)), execute_time from cw_doop_120086658539777.doop_resource_info where execute_time > 1687190454000 and ci_id = '118696109082370' group by ci_id, ci_name, execute_time, model_id having count(*) > 1 order by execute_time desc limit 10 ) b on a.ci_id = b.ci_id and a.execute_time = b.execute_time order by execute_time desc".equals(
-                StringUtils.trim(result)));
+        Assert.assertTrue(sql,
+            "select ci_id,ci_name,model_id,toString(toDateTime(execute_time/1000)),execute_time from cw_doop_120086658539777.doop_resource_info a global join (select ci_id, ci_name, model_id, toString(toDateTime(execute_time/1000)), execute_time from cw_doop_120086658539777.doop_resource_info where execute_time > 1687190454000 and ci_id = '118696109082370' group by ci_id, ci_name, execute_time, model_id having count(*) > 1 order by execute_time desc limit 10) b on a.ci_id = b.ci_id and a.execute_time = b.execute_time order by execute_time desc".equals(
+                StringUtils.trim(sql)));
+    }
+
+    @Test
+    public void testWhereSingleCondition() {
+        WhereCondition whereCondition = new WhereCondition();
+        whereCondition.eq("task_execute_time", 1111);
+        String subSelect = ClickhouseHelper.selectBuilder()
+            .select("1")
+            .from("table1")
+            .where(whereCondition)
+            .asSubSelect();
+
+        String sql = ClickhouseHelper.selectBuilder()
+            .select("count(*)")
+            .from(subSelect)
+            .groupBy("host_ip", "host_name", "host_id")
+            .build();
+        System.out.println(sql);
     }
 
     @Test
@@ -92,7 +110,7 @@ public class ClickhouseHelperTest {
             .orderByDesc("host_ip")
             .build();
         Assert.assertTrue(sql,
-            "select h.name,h.host_ip,h.host_id from cw_doop_120086658539777.doop_host_list AS h  where (host_ip in (13,12) and host_id not in ('1','2')) AND name = 'timothy' group by host_ip,host_id order by host_ip desc".equals(
+            "select h.name,h.host_ip,h.host_id from cw_doop_120086658539777.doop_host_list AS h  where (host_ip in (13,12) and host_id not in ('1','2')) AND (name = 'timothy') group by host_ip,host_id order by host_ip desc".equals(
                 StringUtils.trim(sql)));
     }
 
@@ -121,7 +139,10 @@ public class ClickhouseHelperTest {
             .from("hp", "cw_doop_120808049271554.host_processes_info")
             .globalJoin("h", subSelect, "h.host_id = hp.host_id")
             .build();
-        System.out.println(sql);
+        Assert.assertTrue(
+            sql,
+            "select argMax(hp.host_name, hp.update_time) AS hostName from cw_doop_120808049271554.host_processes_info AS hp  global join (select h.name,h.host_ip,h.host_id from cw_doop_120086658539777.doop_host_list AS h  where host_ip=13 ) as h on h.host_id = hp.host_id".equals(
+                sql.trim()));
     }
 
     @Data

@@ -44,6 +44,11 @@ public class AfterJoinBuilder
     }
 
     @Override
+    public AfterGroupByBuilder groupBy(String... groupBy) {
+        return groupByBuilder.groupBy(groupBy);
+    }
+
+    @Override
     public AfterGroupByBuilder groupBy(List<String> groupBy) {
         return groupByBuilder.groupBy(groupBy);
     }
