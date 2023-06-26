@@ -25,13 +25,26 @@ public class ConditionItem {
     private String operator;
     private Object value;
 
+    private boolean ignoreCase = false;
+
     public ConditionItem(String key, String operator, Object value) {
         this.key = key;
         this.value = value;
         this.operator = operator;
     }
 
+    public ConditionItem(String key, String operator, Object value, boolean ignoreCase) {
+        this.key = key;
+        this.value = value;
+        this.operator = operator;
+        this.ignoreCase = ignoreCase;
+    }
+
     public String build() {
+        if (ignoreCase) {
+            return ignoreCaseBuild();
+        }
+
         if (value instanceof List) {
             List listValue = (List) value;
             Object o = listValue.get(0);
@@ -46,5 +59,27 @@ public class ConditionItem {
             return key + " " + operator + " '" + value + "'";
         }
         return key + " " + operator + " " + value;
+    }
+
+    private String ignoreCaseBuild() {
+        if (value instanceof List) {
+            List listValue = (List) value;
+            Object o = listValue.get(0);
+            if (o instanceof String) {
+                listValue.replaceAll(item -> "'" + item.toString().toLowerCase() + "'");
+                return lower(key) + " " + operator + " (" + JoinerUtils.PARAM_JOINER.join(listValue) + ")";
+            } else {
+                return lower(key) + " " + operator + " (" + JoinerUtils.PARAM_JOINER.join(listValue) + ")";
+            }
+        }
+        if (value instanceof String) {
+            return lower(key) + " " + operator + " '" + value.toString().toLowerCase() + "'";
+        }
+
+        return lower(key) + " " + operator + " " + value.toString().toLowerCase();
+    }
+
+    private String lower(String k) {
+        return "lower(" + k + ")";
     }
 }

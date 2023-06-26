@@ -32,18 +32,30 @@ public class WhereCondition {
         data.add(item);
     }
 
-    public WhereCondition in(String key, List<Object> values) {
-        this.add(new ConditionItem(key, ConditionItem.IN, values));
+    public WhereCondition in(String key, List<Object> values, boolean... ignoreCase) {
+        if (ignoreCase.length > 0 && ignoreCase[0]) {
+            this.add(new ConditionItem(key, ConditionItem.IN, values, true));
+        } else {
+            this.add(new ConditionItem(key, ConditionItem.IN, values));
+        }
         return this;
     }
 
-    public WhereCondition notIn(String key, List<Object> values) {
-        this.add(new ConditionItem(key, ConditionItem.NOT_IN, values));
+    public WhereCondition notIn(String key, List<Object> values, boolean... ignoreCase) {
+        if (ignoreCase.length > 0 && ignoreCase[0]) {
+            this.add(new ConditionItem(key, ConditionItem.NOT_IN, values, true));
+        } else {
+            this.add(new ConditionItem(key, ConditionItem.NOT_IN, values));
+        }
         return this;
     }
 
-    public WhereCondition eq(String key, Object value) {
-        this.add(new ConditionItem(key, ConditionItem.EQUALS, value));
+    public WhereCondition eq(String key, Object value, boolean... ignoreCase) {
+        if (ignoreCase.length > 0 && ignoreCase[0]) {
+            this.add(new ConditionItem(key, ConditionItem.EQUALS, value, true));
+        } else {
+            this.add(new ConditionItem(key, ConditionItem.EQUALS, value));
+        }
         return this;
     }
 

@@ -145,6 +145,24 @@ public class ClickhouseHelperTest {
                 sql.trim()));
     }
 
+    @Test
+    public void testWhereSupportIgnoreCase() {
+        WhereCondition condition = new WhereCondition();
+        condition.in("host_ip", Lists.newArrayList(13, 12), true)
+            .notIn("host_id", Lists.newArrayList("A", "B", "C"), false)
+            .and(new WhereCondition().eq("name", "TIMOTHY", true));
+        String sql = ClickhouseHelper.selectBuilder()
+            .select("h", HostMonitor.class)
+            .from("h", "cw_doop_120086658539777.doop_host_list")
+            .where(condition)
+            .groupBy(Lists.newArrayList("host_ip", "host_id"))
+            .orderByDesc("host_ip")
+            .build();
+        Assert.assertTrue(sql,
+            "select h.name,h.host_ip,h.host_id from cw_doop_120086658539777.doop_host_list AS h  where (lower(host_ip) in (13,12) and host_id not in ('A','B','C')) AND (lower(name) = 'timothy') group by host_ip,host_id order by host_ip desc".equals(
+                StringUtils.trim(sql)));
+    }
+
     @Data
     @ClickhouseTable(db = "cw_doop", table = "cw_db.doop_host_list", alias = "h")
     class HostMonitor {
