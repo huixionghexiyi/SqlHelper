@@ -35,6 +35,9 @@ public class FromBuilder implements SqlPart, FromBuildable {
 
     @Override
     public String part() {
+        if (afterFromBuilder.hasJoin()) {
+            return data + afterFromBuilder.getJoinTable();
+        }
         return data;
     }
 }

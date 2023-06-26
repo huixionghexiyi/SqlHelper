@@ -56,7 +56,7 @@ public class AfterFromBuilder implements SqlBuildable, WhereBuildable, OrderByBu
 
     @Override
     public LimitBuilder orderByDesc(String orderBy) {
-        return null;
+        return orderByBuilder.orderBy(orderBy);
     }
 
     @Override
@@ -94,16 +94,36 @@ public class AfterFromBuilder implements SqlBuildable, WhereBuildable, OrderByBu
 
     @Override
     public AfterJoinBuilder globalJoin(String alias, String table, String on) {
+        joinBuilderCheck();
         return joinBuilder.globalJoin(alias, table, on);
     }
 
     @Override
     public AfterJoinBuilder globalLeftJoin(String alias, String table, String on) {
+        joinBuilderCheck();
         return joinBuilder.globalLeftJoin(alias, table, on);
     }
 
     @Override
     public AfterJoinBuilder globalRightJoin(String alias, String table, String on) {
+        joinBuilderCheck();
         return joinBuilder.globalRightJoin(alias, table, on);
     }
+
+    public void joinBuilderCheck() {
+        if (this.joinBuilder != null) {
+            throw new RuntimeException("joinBuilder 已经存在");
+        }
+        joinBuilder = new JoinBuilder(new AfterJoinBuilder(proxy, whereBuilder, orderByBuilder, limitBuilder,
+            groupByBuilder));
+    }
+
+    public boolean hasJoin() {
+        return joinBuilder != null;
+    }
+
+    public String getJoinTable() {
+        return joinBuilder.part();
+    }
+
 }

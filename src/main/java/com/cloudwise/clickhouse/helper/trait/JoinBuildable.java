@@ -13,4 +13,5 @@ public interface JoinBuildable {
     AfterJoinBuilder globalLeftJoin(String alias, String table, String on);
 
     AfterJoinBuilder globalRightJoin(String alias, String table, String on);
+
 }

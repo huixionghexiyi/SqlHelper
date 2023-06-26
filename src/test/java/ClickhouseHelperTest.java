@@ -58,8 +58,8 @@ public class ClickhouseHelperTest {
             .groupBy(Lists.newArrayList("host_ip", "host_id"))
             .orderByDesc("host_ip")
             .build();
-        Assert.assertTrue(
-            "select h.name,h.host_ip,h.host_id from cw_doop_120086658539777.doop_host_list h where host_ip=13 group by host_ip,host_id order by host_ip".equals(
+        Assert.assertTrue(sql,
+            "select h.name,h.host_ip,h.host_id from cw_doop_120086658539777.doop_host_list h where host_ip=13 group by host_ip,host_id order by host_ip desc".equals(
                 StringUtils.trim(sql)));
     }
 
@@ -73,8 +73,8 @@ public class ClickhouseHelperTest {
             .groupBy(Lists.newArrayList("host_ip", "host_id"))
             .orderByDesc("host_ip")
             .build();
-        Assert.assertTrue(
-            "select h.name,h.host_ip,h.host_id ,select hp.name,hp.process_id,hp.cpu_used,hp.host_id from cw_doop_120086658539777.doop_host_list AS h  where host_ip=13 group by host_ip,host_id order by host_ip".equals(
+        Assert.assertTrue(sql,
+            "select h.name,h.host_ip,h.host_id ,hp.name,hp.process_id,hp.cpu_used,hp.host_id from cw_doop_120086658539777.doop_host_list AS h  where host_ip=13 group by host_ip,host_id order by host_ip desc".equals(
                 StringUtils.trim(sql)));
     }
 
@@ -92,7 +92,7 @@ public class ClickhouseHelperTest {
             .orderByDesc("host_ip")
             .build();
         Assert.assertTrue(sql,
-            "select h.name,h.host_ip,h.host_id  from cw_doop_120086658539777.doop_host_list AS h  where (host_ip in (13,12) and host_id not in ('1','2')) AND name = 'timothy' group by host_ip,host_id order by host_ip".equals(
+            "select h.name,h.host_ip,h.host_id from cw_doop_120086658539777.doop_host_list AS h  where (host_ip in (13,12) and host_id not in ('1','2')) AND name = 'timothy' group by host_ip,host_id order by host_ip desc".equals(
                 StringUtils.trim(sql)));
     }
 
@@ -108,6 +108,21 @@ public class ClickhouseHelperTest {
     //            .groupBy("hp.host_id, hp.pid, hp.create_time")
     //            .orderByDesc("systemProcessCpuPercent");
     //    }
+
+    @Test
+    public void testAggregation() {
+        String subSelect = ClickhouseHelper.selectBuilder()
+            .select("h", HostMonitor.class)
+            .from("h", "cw_doop_120086658539777.doop_host_list")
+            .where("host_ip=13").asSubSelect();
+        String sql = ClickhouseHelper.selectBuilder()
+            .select()
+            .appendSelect("argMax(hp.host_name, hp.update_time) AS hostName")
+            .from("hp", "cw_doop_120808049271554.host_processes_info")
+            .globalJoin("h", subSelect, "h.host_id = hp.host_id")
+            .build();
+        System.out.println(sql);
+    }
 
     @Data
     @ClickhouseTable(db = "cw_doop", table = "cw_db.doop_host_list", alias = "h")

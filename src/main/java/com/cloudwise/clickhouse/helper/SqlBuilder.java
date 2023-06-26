@@ -3,7 +3,6 @@ package com.cloudwise.clickhouse.helper;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.C;
 
 import com.cloudwise.clickhouse.helper.builder.FromBuilder;
 import com.cloudwise.clickhouse.helper.builder.GroupByBuilder;
@@ -40,30 +39,34 @@ public class SqlBuilder implements SqlBuildable {
     }
 
     public String build() {
-        String sql = selectBuilder.part() + fromBuilder.part();
+        StringBuilder sql = new StringBuilder(selectBuilder.part() + fromBuilder.part());
 
         if (StringUtils.isNotEmpty(whereBuilder.part())) {
-            sql += whereBuilder.part();
+            sql.append(whereBuilder.part());
         }
         if (StringUtils.isNotEmpty(groupByBuilder.part())) {
-            sql += groupByBuilder.part();
+            sql.append(groupByBuilder.part());
         }
         if (StringUtils.isNotEmpty(orderByBuilder.part())) {
-            sql += orderByBuilder.part();
+            sql.append(orderByBuilder.part());
         }
         if (StringUtils.isNotEmpty(limitBuilder.part())) {
-            sql += limitBuilder.part();
+            sql.append(limitBuilder.part());
         }
-        return sql;
+        return sql.toString();
     }
 
     @Override
     public String asSubSelect() {
-        return String.format("( %s )", build());
+        return "(" + build() + ")";
     }
 
     public AfterSelectBuilder select(String select) {
         return selectBuilder.select(select);
+    }
+
+    public AfterSelectBuilder select() {
+        return selectBuilder.select();
     }
 
     public AfterSelectBuilder select(String tableAlias, List<String> select) {
@@ -76,9 +79,5 @@ public class SqlBuilder implements SqlBuildable {
 
     public AfterSelectBuilder select(String tableAlias, Class<?> clazz) {
         return selectBuilder.select(SelectHelper.by(tableAlias, clazz));
-    }
-
-    public AfterSelectBuilder appendSelect(String tableAlias, Class<?> clazz) {
-        return selectBuilder.append(SelectHelper.by(tableAlias, clazz));
     }
 }

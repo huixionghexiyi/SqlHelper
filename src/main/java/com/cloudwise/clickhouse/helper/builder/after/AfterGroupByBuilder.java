@@ -30,7 +30,7 @@ public class AfterGroupByBuilder implements SqlBuildable, OrderByBuildable, Limi
 
     @Override
     public LimitBuilder orderByDesc(String desc) {
-        return orderByBuilder.orderBy(desc);
+        return orderByBuilder.orderByDesc(desc);
     }
 
     @Override

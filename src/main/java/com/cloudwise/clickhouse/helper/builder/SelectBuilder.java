@@ -15,22 +15,21 @@ public class SelectBuilder {
 
     public SelectBuilder(SqlBuilder proxy, FromBuilder fromBuilder) {
         this.data = new StringBuilder();
-        this.afterSelectBuilder = new AfterSelectBuilder(proxy, fromBuilder);
+        this.afterSelectBuilder = new AfterSelectBuilder(fromBuilder, this);
     }
 
     public AfterSelectBuilder select(String select) {
-        append(String.format("select %s ", select));
-        return afterSelectBuilder;
-    }
-
-    public AfterSelectBuilder append(String select) {
         data.append(',')
             .append(select)
             .append(' ');
         return afterSelectBuilder;
     }
 
+    public AfterSelectBuilder select() {
+        return afterSelectBuilder;
+    }
+
     public String part() {
-        return data.substring(1);
+        return data.replace(0, 1, "select ").toString();
     }
 }
